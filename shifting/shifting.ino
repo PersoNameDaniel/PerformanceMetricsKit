@@ -1,5 +1,7 @@
 const int upShiftPin = 2;
 const int downShiftPin = 3;
+const int shiftSolenoid12 = 4;
+const int shiftSolenoid34 = 5;
 const int crankSensorPin = 18;
 
 const int maxGear = 4;
@@ -16,6 +18,9 @@ void setup() {
     attachInterrupt(digitalPinToInterrupt(downShiftPin), decrementShift, RISING);
     pinMode(crankSensorPin, INPUT);
     attachInterrupt(digitalPinToInterrupt(crankSensorPin), incrementCrankCount, RISING);
+
+    pinMode(shiftSolenoid12, OUTPUT);
+    pinMode(shiftSolenoid34, OUTPUT);
 }
 
 void loop() {
@@ -108,17 +113,25 @@ void downShift() {
 }
 
 void shiftToFirst() {
-    Serial.println("Shifting to first gear");
+    digitalWrite(shiftSolenoid12, LOW);
+    digitalWrite(shiftSolenoid34, LOW);
+    Serial.println("Shifted into first gear");
 }
 
 void shiftToSecond() {
-    Serial.println("Shifting to second gear");
+    digitalWrite(shiftSolenoid12, LOW);
+    digitalWrite(shiftSolenoid34, HIGH);
+    Serial.println("Shifted into second gear");
 }
 
 void shiftToThird() {
-    Serial.println("Shifting to third gear");
+    digitalWrite(shiftSolenoid12, LOW);
+    digitalWrite(shiftSolenoid34, LOW);
+    Serial.println("Shifted into third gear");
 }
 
 void shiftToFourth() {
-    Serial.println("Shifting to fourth gear");
+    digitalWrite(shiftSolenoid12, HIGH);
+    digitalWrite(shiftSolenoid34, HIGH);
+    Serial.println("Shifted into fourth gear");
 }
