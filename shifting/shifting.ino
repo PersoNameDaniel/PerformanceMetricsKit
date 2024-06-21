@@ -22,6 +22,12 @@ void loop() {
     //Serial.println(crankCount);
     Serial.print(getEngineRPM());
     Serial.println(" RPM");
+
+    if (shift > 0) {
+        upShift();
+    } else if (shift < 0) {
+        downShift();
+    }
     delay(500);
 }
 
@@ -57,9 +63,20 @@ int getEngineRPM() {
 
 void upShift() {
     if (gear < maxGear) {
-        gear++;
-        Serial.print("shift: current gear is ");
-        Serial.println(gear);
+        switch (gear){
+            case 1:
+                shiftToSecond();
+                gear++;
+            break;
+            case 2:
+                shiftToThird();
+                gear++;
+            break;
+            case 3:
+                shiftToFourth();
+                gear++;
+            break;
+        }
     } else {
         Serial.print("up shift invalid: current gear is ");
         Serial.println(gear);
@@ -69,12 +86,39 @@ void upShift() {
 
 void downShift() {
     if (gear > 1) {
-        gear--;
-        Serial.print("shift: current gear is ");
-        Serial.println(gear);
+        switch (gear){
+            case 2:
+                shiftToFirst();
+                gear--;
+            break;
+            case 3:
+                shiftToSecond();
+                gear--;
+            break;
+            case 4:
+                shiftToThird();
+                gear--;
+            break;
+        }
     } else {
         Serial.print("down shift invalid: current gear is ");
         Serial.println(gear);
     }
     shift += 1;
+}
+
+void shiftToFirst() {
+    Serial.println("Shifting to first gear");
+}
+
+void shiftToSecond() {
+    Serial.println("Shifting to second gear");
+}
+
+void shiftToThird() {
+    Serial.println("Shifting to third gear");
+}
+
+void shiftToFourth() {
+    Serial.println("Shifting to fourth gear");
 }
