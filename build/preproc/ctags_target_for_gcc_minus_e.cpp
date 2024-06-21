@@ -9,10 +9,10 @@ const int maxGear = 4;
 const int minimumRPM = 800;
 const int maximumRPM = 6000;
 //const int finalDriveRatio = 2.93;
-const int firstGearRatio = 2.921;
-const int secondGearRatio = 1.568;
-const int thirdGearRatio = 1.000;
-const int fourthGearRatio = 0.705;
+const float firstGearRatio = 2.921;
+const float secondGearRatio = 1.568;
+const float thirdGearRatio = 1.000;
+const float fourthGearRatio = 0.705;
 
 int gear = 1;
 int shift = 0;
@@ -45,7 +45,7 @@ void loop() {
         downShift();
     }
 
-    delay(1000);
+    delay(100);
 }
 
 void incrementCrankCount() {
