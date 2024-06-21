@@ -1,3 +1,4 @@
+# 1 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
 const int upShiftPin = 2;
 const int downShiftPin = 3;
 const int shiftSolenoid12 = 4;
@@ -21,15 +22,15 @@ unsigned long startTime = millis();
 
 void setup() {
     Serial.begin(115200);
-    pinMode(upShiftPin, INPUT);
-    attachInterrupt(digitalPinToInterrupt(upShiftPin), incrementShift, RISING);
-    pinMode(downShiftPin, INPUT);
-    attachInterrupt(digitalPinToInterrupt(downShiftPin), decrementShift, RISING);
-    pinMode(crankSensorPin, INPUT);
-    attachInterrupt(digitalPinToInterrupt(crankSensorPin), incrementCrankCount, CHANGE);
+    pinMode(upShiftPin, 0x0);
+    attachInterrupt(((upShiftPin) == 2 ? 0 : ((upShiftPin) == 3 ? 1 : ((upShiftPin) >= 18 && (upShiftPin) <= 21 ? 23 - (upShiftPin) : -1))), incrementShift, 3);
+    pinMode(downShiftPin, 0x0);
+    attachInterrupt(((downShiftPin) == 2 ? 0 : ((downShiftPin) == 3 ? 1 : ((downShiftPin) >= 18 && (downShiftPin) <= 21 ? 23 - (downShiftPin) : -1))), decrementShift, 3);
+    pinMode(crankSensorPin, 0x0);
+    attachInterrupt(((crankSensorPin) == 2 ? 0 : ((crankSensorPin) == 3 ? 1 : ((crankSensorPin) >= 18 && (crankSensorPin) <= 21 ? 23 - (crankSensorPin) : -1))), incrementCrankCount, 1);
 
-    pinMode(shiftSolenoid12, OUTPUT);
-    pinMode(shiftSolenoid34, OUTPUT);
+    pinMode(shiftSolenoid12, 0x1);
+    pinMode(shiftSolenoid34, 0x1);
 }
 
 void loop() {
@@ -62,7 +63,7 @@ void decrementShift() {
 int getEngineRPM() {
     unsigned long currentTime = millis();
     float timeInSeconds = (currentTime - startTime) / 1000.0; // convert milliseconds to seconds
-    
+
     float frequency = crankCount / timeInSeconds; // calculate frequency in Hz
     engineRPM = (frequency / 18) * 60; // convert Hz to RPM
 
@@ -165,29 +166,29 @@ void downShift() {
 }
 
 void shiftToFirst() {
-    digitalWrite(shiftSolenoid12, LOW);
-    digitalWrite(shiftSolenoid34, LOW);
+    digitalWrite(shiftSolenoid12, 0x0);
+    digitalWrite(shiftSolenoid34, 0x0);
     gear = 1;
     Serial.println("Shifted into first gear");
 }
 
 void shiftToSecond() {
-    digitalWrite(shiftSolenoid12, LOW);
-    digitalWrite(shiftSolenoid34, HIGH);
+    digitalWrite(shiftSolenoid12, 0x0);
+    digitalWrite(shiftSolenoid34, 0x1);
     gear = 2;
     Serial.println("Shifted into second gear");
 }
 
 void shiftToThird() {
-    digitalWrite(shiftSolenoid12, LOW);
-    digitalWrite(shiftSolenoid34, LOW);
+    digitalWrite(shiftSolenoid12, 0x0);
+    digitalWrite(shiftSolenoid34, 0x0);
     gear = 3;
     Serial.println("Shifted into third gear");
 }
 
 void shiftToFourth() {
-    digitalWrite(shiftSolenoid12, HIGH);
-    digitalWrite(shiftSolenoid34, HIGH);
+    digitalWrite(shiftSolenoid12, 0x1);
+    digitalWrite(shiftSolenoid34, 0x1);
     gear = 4;
     Serial.println("Shifted into fourth gear");
 }

@@ -1,3 +1,5 @@
+#include <Arduino.h>
+#line 1 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
 const int upShiftPin = 2;
 const int downShiftPin = 3;
 const int shiftSolenoid12 = 4;
@@ -19,6 +21,35 @@ int crankCount = 0;
 float engineRPM = -1.0;
 unsigned long startTime = millis();
 
+#line 22 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+void setup();
+#line 35 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+void loop();
+#line 50 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+void incrementCrankCount();
+#line 54 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+void incrementShift();
+#line 58 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+void decrementShift();
+#line 62 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+int getEngineRPM();
+#line 78 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+double getGearRatio(int gear);
+#line 96 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+float getNewEngineRPM(int newGear);
+#line 103 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+void upShift();
+#line 135 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+void downShift();
+#line 167 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+void shiftToFirst();
+#line 174 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+void shiftToSecond();
+#line 181 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+void shiftToThird();
+#line 188 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+void shiftToFourth();
+#line 22 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
 void setup() {
     Serial.begin(115200);
     pinMode(upShiftPin, INPUT);
