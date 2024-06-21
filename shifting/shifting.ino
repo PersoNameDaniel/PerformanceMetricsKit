@@ -5,6 +5,13 @@ const int shiftSolenoid34 = 5;
 const int crankSensorPin = 18;
 
 const int maxGear = 4;
+const int maxRPM = 6000;
+//const int finalDriveRatio = 2.93;
+const int firstGearRatio = 2.921;
+const int secondGearRatio = 1.568;
+const int thirdGearRatio = 1.000;
+const int fourthGearRatio = 0.705;
+
 int gear = 1;
 int shift = 0;
 int crankCount = 0;
@@ -17,7 +24,7 @@ void setup() {
     pinMode(downShiftPin, INPUT);
     attachInterrupt(digitalPinToInterrupt(downShiftPin), decrementShift, RISING);
     pinMode(crankSensorPin, INPUT);
-    attachInterrupt(digitalPinToInterrupt(crankSensorPin), incrementCrankCount, RISING);
+    attachInterrupt(digitalPinToInterrupt(crankSensorPin), incrementCrankCount, CHANGE);
 
     pinMode(shiftSolenoid12, OUTPUT);
     pinMode(shiftSolenoid34, OUTPUT);
@@ -33,7 +40,7 @@ void loop() {
     } else if (shift < 0) {
         downShift();
     }
-    delay(500);
+    delay(100);
 }
 
 void incrementCrankCount() {
@@ -51,10 +58,10 @@ void decrementShift() {
 int getEngineRPM() {
     unsigned long currentTime = millis();
     float timeInSeconds = (currentTime - startTime) / 1000.0; // convert milliseconds to seconds
-    int engineRPM = -1;
+    float engineRPM = -1.0;
     
     float frequency = crankCount / timeInSeconds; // calculate frequency in Hz
-    engineRPM = (frequency / 3) * 60; // convert Hz to RPM
+    engineRPM = (frequency / 18) * 60; // convert Hz to RPM
 
     Serial.println(crankCount);
     Serial.println(timeInSeconds);
@@ -65,6 +72,29 @@ int getEngineRPM() {
     return engineRPM;
 }
 
+double getGearRatio(int gear) {
+    switch (gear) {
+        case 1:
+            return firstGearRatio;
+        break;
+        case 2:
+            return secondGearRatio;
+        break;
+        case 3:
+            return thirdGearRatio;
+        break;
+        case 4:
+            return fourthGearRatio;
+        break;
+        default: return -1.0; // Default or error case
+    }
+}
+
+void getWheelRPM() {
+    double gearRatio = getGearRatio(gear);
+    double wheelRPM = engineRPM * gearRatio * finalDriveRatio;
+    return wheelRPM;
+}
 
 void upShift() {
     if (gear < maxGear) {
