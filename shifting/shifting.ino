@@ -15,9 +15,10 @@ const float fourthGearRatio = 0.705;
 
 int gear = 1;
 int shift = 0;
-int crankCount = 0;
+unsigned long crankCount = 0;
 float engineRPM = -1.0;
 unsigned long startTime = millis();
+unsigned long currentTime = 0;
 
 void setup() {
     Serial.begin(115200);
@@ -33,10 +34,12 @@ void setup() {
 }
 
 void loop() {
-    float engineRPM = getEngineRPM();
+    if ((millis() - startTime) > 86400000) {
+        getEngineRPM();
+    }
     //Serial.println(crankCount);
-    Serial.print(engineRPM);
-    Serial.println(" RPM");
+    //Serial.print(engineRPM);
+    //Serial.println(" RPM");
 
     if (shift > 0) {
         upShift();
@@ -44,7 +47,7 @@ void loop() {
         downShift();
     }
 
-    delay(100);
+    //delay(250);
 }
 
 void incrementCrankCount() {
@@ -60,7 +63,7 @@ void decrementShift() {
 }
 
 int getEngineRPM() {
-    unsigned long currentTime = millis();
+    currentTime = millis();
     float timeInSeconds = (currentTime - startTime) / 1000.0; // convert milliseconds to seconds
     
     float frequency = crankCount / timeInSeconds; // calculate frequency in Hz
@@ -72,6 +75,7 @@ int getEngineRPM() {
     crankCount = 0;
     startTime = currentTime;
 
+    Serial.println(engineRPM);
     return engineRPM;
 }
 
@@ -95,7 +99,7 @@ double getGearRatio(int gear) {
 
 float getNewEngineRPM(int newGear) {
     //float newEngineRPM = engineRPM * (getGearRatio(gear) / getGearRatio(newGear));
-    float newEngineRPM = engineRPM * (getGearRatio(newGear) / getGearRatio(gear));
+    float newEngineRPM = getEngineRPM() * (getGearRatio(newGear) / getGearRatio(gear));
     Serial.println(newEngineRPM);
     return newEngineRPM;
 }

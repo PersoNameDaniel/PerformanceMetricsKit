@@ -17,39 +17,40 @@ const float fourthGearRatio = 0.705;
 
 int gear = 1;
 int shift = 0;
-int crankCount = 0;
+unsigned long crankCount = 0;
 float engineRPM = -1.0;
 unsigned long startTime = millis();
+unsigned long currentTime = 0;
 
-#line 22 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+#line 23 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
 void setup();
-#line 35 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+#line 36 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
 void loop();
-#line 50 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+#line 53 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
 void incrementCrankCount();
-#line 54 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+#line 57 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
 void incrementShift();
-#line 58 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+#line 61 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
 void decrementShift();
-#line 62 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+#line 65 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
 int getEngineRPM();
-#line 78 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+#line 82 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
 double getGearRatio(int gear);
-#line 96 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+#line 100 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
 float getNewEngineRPM(int newGear);
-#line 103 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+#line 107 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
 void upShift();
-#line 135 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+#line 139 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
 void downShift();
-#line 167 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+#line 171 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
 void shiftToFirst();
-#line 174 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+#line 178 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
 void shiftToSecond();
-#line 181 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+#line 185 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
 void shiftToThird();
-#line 188 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+#line 192 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
 void shiftToFourth();
-#line 22 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+#line 23 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
 void setup() {
     Serial.begin(115200);
     pinMode(upShiftPin, INPUT);
@@ -64,10 +65,12 @@ void setup() {
 }
 
 void loop() {
-    float engineRPM = getEngineRPM();
+    if ((millis() - startTime) > 10000) {
+        getEngineRPM();
+    }
     //Serial.println(crankCount);
-    Serial.print(engineRPM);
-    Serial.println(" RPM");
+    //Serial.print(engineRPM);
+    //Serial.println(" RPM");
 
     if (shift > 0) {
         upShift();
@@ -75,7 +78,7 @@ void loop() {
         downShift();
     }
 
-    delay(100);
+    //delay(250);
 }
 
 void incrementCrankCount() {
@@ -91,7 +94,7 @@ void decrementShift() {
 }
 
 int getEngineRPM() {
-    unsigned long currentTime = millis();
+    currentTime = millis();
     float timeInSeconds = (currentTime - startTime) / 1000.0; // convert milliseconds to seconds
     
     float frequency = crankCount / timeInSeconds; // calculate frequency in Hz
@@ -103,6 +106,7 @@ int getEngineRPM() {
     crankCount = 0;
     startTime = currentTime;
 
+    Serial.println(engineRPM);
     return engineRPM;
 }
 
@@ -126,7 +130,7 @@ double getGearRatio(int gear) {
 
 float getNewEngineRPM(int newGear) {
     //float newEngineRPM = engineRPM * (getGearRatio(gear) / getGearRatio(newGear));
-    float newEngineRPM = engineRPM * (getGearRatio(newGear) / getGearRatio(gear));
+    float newEngineRPM = getEngineRPM() * (getGearRatio(newGear) / getGearRatio(gear));
     Serial.println(newEngineRPM);
     return newEngineRPM;
 }
@@ -203,21 +207,21 @@ void shiftToFirst() {
 }
 
 void shiftToSecond() {
-    digitalWrite(shiftSolenoid12, LOW);
-    digitalWrite(shiftSolenoid34, HIGH);
+    digitalWrite(shiftSolenoid12, HIGH);
+    digitalWrite(shiftSolenoid34, LOW);
     gear = 2;
     Serial.println("Shifted into second gear");
 }
 
 void shiftToThird() {
-    digitalWrite(shiftSolenoid12, LOW);
-    digitalWrite(shiftSolenoid34, LOW);
+    digitalWrite(shiftSolenoid12, HIGH);
+    digitalWrite(shiftSolenoid34, HIGH);
     gear = 3;
     Serial.println("Shifted into third gear");
 }
 
 void shiftToFourth() {
-    digitalWrite(shiftSolenoid12, HIGH);
+    digitalWrite(shiftSolenoid12, LOW);
     digitalWrite(shiftSolenoid34, HIGH);
     gear = 4;
     Serial.println("Shifted into fourth gear");
