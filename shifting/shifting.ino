@@ -4,17 +4,18 @@ const int shiftSolenoid12 = 4;
 const int shiftSolenoid34 = 5;
 const int crankSensorPin = 18;
 
+const int pulsesPerRevolution = 18;
 const int maxGear = 4;
 const int minimumRPM = 800;
 const int maximumRPM = 6000;
-//const int finalDriveRatio = 2.93;
+const float safetyTolerance = 0.1;
 const float firstGearRatio = 2.921;
 const float secondGearRatio = 1.568;
 const float thirdGearRatio = 1.000;
 const float fourthGearRatio = 0.705;
 
 int gear = 1;
-int shift = 0;
+int shiftsRequested = 0;
 unsigned long crankCount = 0;
 float engineRPM = -1.0;
 unsigned long startTime = millis();
@@ -41,7 +42,7 @@ void loop() {
     //Serial.print(engineRPM);
     //Serial.println(" RPM");
 
-    if (shift > 0) {
+    if (shiftsRequested > 0) {
         upShift();
     } else if (shift < 0) {
         downShift();
@@ -55,19 +56,19 @@ void incrementCrankCount() {
 }
 
 void incrementShift() {
-    shift++;
+    shiftsRequested++;
 }
 
 void decrementShift() {
-    shift--;
+    shiftsRequested--;
 }
 
 int getEngineRPM() {
     currentTime = millis();
-    float timeInSeconds = (currentTime - startTime) / 1000.0; // convert milliseconds to seconds
+    float timeInSeconds = (currentTime - startTime) / 1000.0;
     
-    float frequency = crankCount / timeInSeconds; // calculate frequency in Hz
-    engineRPM = (frequency / 18) * 60; // convert Hz to RPM
+    float frequency = crankCount / timeInSeconds;
+    engineRPM = (frequency / pulsesPerRevolution) * 60;
 
     //Serial.println(crankCount);
     //Serial.println(timeInSeconds);
@@ -93,12 +94,11 @@ double getGearRatio(int gear) {
         case 4:
             return fourthGearRatio;
         break;
-        default: return -1.0; // Default or error case
+        default: return -1.0;
     }
 }
 
 float getNewEngineRPM(int newGear) {
-    //float newEngineRPM = engineRPM * (getGearRatio(gear) / getGearRatio(newGear));
     float newEngineRPM = getEngineRPM() * (getGearRatio(newGear) / getGearRatio(gear));
     Serial.println(newEngineRPM);
     return newEngineRPM;
@@ -133,7 +133,7 @@ void upShift() {
         Serial.print("up shift invalid: current gear is ");
         Serial.println(gear);
     }
-    shift -= 1;
+    shiftsRequested -= 1;
 }
 
 void downShift() {
@@ -165,7 +165,7 @@ void downShift() {
         Serial.print("down shift invalid: current gear is ");
         Serial.println(gear);
     }
-    shift += 1;
+    shiftsRequested += 1;
 }
 
 void shiftToFirst() {
