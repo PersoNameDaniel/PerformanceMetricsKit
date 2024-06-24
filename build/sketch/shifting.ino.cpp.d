@@ -10,4 +10,5 @@ C:\Users\Daniel\Documents\GitHub\PerformanceMetricsKit\build\sketch\shifting.ino
  C:\Users\Daniel\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.6\cores\arduino/Printable.h \
  C:\Users\Daniel\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.6\cores\arduino/USBAPI.h \
  C:\Users\Daniel\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.6\cores\arduino/Arduino.h \
- C:\Users\Daniel\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.6\variants\mega/pins_arduino.h
+ C:\Users\Daniel\AppData\Local\Arduino15\packages\arduino\hardware\avr\1.8.6\variants\mega/pins_arduino.h \
+ C:\Users\Daniel\Documents\GitHub\PerformanceMetricsKit\build\sketch\functions.h
