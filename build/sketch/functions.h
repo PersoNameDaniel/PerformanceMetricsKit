@@ -162,6 +162,8 @@ void upShift() {
         }
     } else {
         if (maxGear == 3) {
+            Serial.print("TPS: ");
+            Serial.print(analogRead(throttlePositionSensorPin));
             Serial.println("Fourth gear locked out");
         }
         Serial.print("up shift invalid: current gear is ");
