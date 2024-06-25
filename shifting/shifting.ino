@@ -18,12 +18,20 @@ void loop() {
     if ((millis() - getStartTime()) > 86400000) {
         getEngineRPM();
     }
+    //int TPS = analogRead(getThrottlePositionSensorPin());
+    //if (TPS > 300) {
     if (analogRead(getThrottlePositionSensorPin()) > 300) {
         lockoutFourthGear();
+    } else {
+        unlockFourthGear();
     }
     //Serial.println(crankCount);
     //Serial.print(engineRPM);
     //Serial.println(" RPM");
+    //if (millis() % 1000 == 0) {
+    //    Serial.print("TPS: ");
+    //    Serial.println(TPS);
+    //}
 
     if (getShiftsRequested() > 0) {
         upShift();

@@ -22,28 +22,6 @@ unsigned long startTime = millis();
 unsigned long crankCount = 0;
 int shiftsRequested = 0;
 
-/*
-int getUpshiftPin();
-int getDownshiftPin();
-int getShiftSolenoid12();
-int getShiftSolenoid34();
-int getCrankSensorPin();
-void incrementCrankCount();
-void incrementShift();
-void decrementShift();
-unsigned long getStartTime();
-int getShiftsRequested();
-int getEngineRPM();
-double getGearRatio(int gear);
-float getNewEngineRPM(int newGear);
-void upShift();
-void downShift();
-void shiftToFirst();
-void shiftToSecond();
-void shiftToThird();
-void shiftToFourth();
-*/
-
 int getThrottlePositionSensorPin() {
     return throttlePositionSensorPin;
 }
@@ -183,6 +161,9 @@ void upShift() {
             break;
         }
     } else {
+        if (maxGear == 3) {
+            Serial.println("Fourth gear locked out");
+        }
         Serial.print("up shift invalid: current gear is ");
         Serial.println(gear);
     }
@@ -228,4 +209,8 @@ void lockoutFourthGear() {
     } else {
         maxGear = 3;
     }
+}
+
+void unlockFourthGear() {
+    maxGear = 4;
 }

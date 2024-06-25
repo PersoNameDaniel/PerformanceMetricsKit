@@ -160,6 +160,9 @@ void upShift() {
             break;
         }
     } else {
+        if (maxGear == 3) {
+            Serial.println("Fourth gear locked out");
+        }
         Serial.print("up shift invalid: current gear is ");
         Serial.println(gear);
     }
@@ -205,4 +208,8 @@ void lockoutFourthGear() {
     } else {
         maxGear = 3;
     }
+}
+
+void unlockFourthGear() {
+    maxGear = 4;
 }
