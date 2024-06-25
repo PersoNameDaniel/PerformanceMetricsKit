@@ -1,3 +1,4 @@
+const int throttlePositionSensorPin = A0;
 const int upShiftPin = 2;
 const int downShiftPin = 3;
 const int shiftSolenoid12 = 4;
@@ -5,7 +6,8 @@ const int shiftSolenoid34 = 5;
 const int crankSensorPin = 18;
 
 const int pulsesPerRevolution = 18;
-const int maxGear = 4;
+const int maxSafeGear = 4;
+int maxGear = maxSafeGear;
 const int minimumRPM = 800;
 const int maximumRPM = 6000;
 const float safetyTolerance = 0.1;
@@ -19,25 +21,9 @@ unsigned long startTime = millis();
 unsigned long crankCount = 0;
 int shiftsRequested = 0;
 
-int getUpshiftPin();
-int getDownshiftPin();
-int getShiftSolenoid12();
-int getShiftSolenoid34();
-int getCrankSensorPin();
-void incrementCrankCount();
-void incrementShift();
-void decrementShift();
-unsigned long getStartTime();
-int getShiftsRequested();
-int getEngineRPM();
-double getGearRatio(int gear);
-float getNewEngineRPM(int newGear);
-void upShift();
-void downShift();
-void shiftToFirst();
-void shiftToSecond();
-void shiftToThird();
-void shiftToFourth();
+int getThrottlePositionSensorPin() {
+    return throttlePositionSensorPin;
+}
 
 int getUpshiftPin() {
     return upShiftPin;
@@ -77,6 +63,34 @@ unsigned long getStartTime() {
 
 int getShiftsRequested() {
     return shiftsRequested;
+}
+
+void shiftToFirst() {
+    digitalWrite(shiftSolenoid12, LOW);
+    digitalWrite(shiftSolenoid34, LOW);
+    gear = 1;
+    Serial.println("Shifted into first gear");
+}
+
+void shiftToSecond() {
+    digitalWrite(shiftSolenoid12, HIGH);
+    digitalWrite(shiftSolenoid34, LOW);
+    gear = 2;
+    Serial.println("Shifted into second gear");
+}
+
+void shiftToThird() {
+    digitalWrite(shiftSolenoid12, HIGH);
+    digitalWrite(shiftSolenoid34, HIGH);
+    gear = 3;
+    Serial.println("Shifted into third gear");
+}
+
+void shiftToFourth() {
+    digitalWrite(shiftSolenoid12, LOW);
+    digitalWrite(shiftSolenoid34, HIGH);
+    gear = 4;
+    Serial.println("Shifted into fourth gear");
 }
 
 int getEngineRPM() {
@@ -184,30 +198,11 @@ void downShift() {
     shiftsRequested += 1;
 }
 
-void shiftToFirst() {
-    digitalWrite(shiftSolenoid12, LOW);
-    digitalWrite(shiftSolenoid34, LOW);
-    gear = 1;
-    Serial.println("Shifted into first gear");
-}
-
-void shiftToSecond() {
-    digitalWrite(shiftSolenoid12, HIGH);
-    digitalWrite(shiftSolenoid34, LOW);
-    gear = 2;
-    Serial.println("Shifted into second gear");
-}
-
-void shiftToThird() {
-    digitalWrite(shiftSolenoid12, HIGH);
-    digitalWrite(shiftSolenoid34, HIGH);
-    gear = 3;
-    Serial.println("Shifted into third gear");
-}
-
-void shiftToFourth() {
-    digitalWrite(shiftSolenoid12, LOW);
-    digitalWrite(shiftSolenoid34, HIGH);
-    gear = 4;
-    Serial.println("Shifted into fourth gear");
+void lockoutFourthGear() {
+    if (gear == 4) {
+        downShift();
+        maxGear = 3;
+    } else {
+        maxGear = 3;
+    }
 }

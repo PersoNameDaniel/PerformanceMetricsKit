@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include "functions.h"
 
+/*
 int getUpshiftPin();
 int getDownshiftPin();
 int getShiftSolenoid12();
@@ -21,12 +22,13 @@ void shiftToFirst();
 void shiftToSecond();
 void shiftToThird();
 void shiftToFourth();
+*/
 
-#line 24 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+#line 26 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
 void setup();
-#line 37 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+#line 39 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
 void loop();
-#line 24 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
+#line 26 "C:\\Users\\Daniel\\Documents\\GitHub\\PerformanceMetricsKit\\shifting\\shifting.ino"
 void setup() {
     Serial.begin(115200);
     pinMode(getUpshiftPin(), INPUT);
@@ -43,6 +45,9 @@ void setup() {
 void loop() {
     if ((millis() - getStartTime()) > 86400000) {
         getEngineRPM();
+    }
+    if (analogRead(getThrottlePositionSensorPin()) > 300) {
+        lockoutFourthGear();
     }
     //Serial.println(crankCount);
     //Serial.print(engineRPM);
