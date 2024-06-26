@@ -12,27 +12,31 @@ void setup() {
 
     pinMode(getShiftSolenoid12(), OUTPUT);
     pinMode(getShiftSolenoid34(), OUTPUT);
+    pinMode(getVehicleComputerBypassRelayPin(), OUTPUT);
+
+    digitalWrite(getVehicleComputerBypassRelayPin(), LOW);
 }
 
 void loop() {
+
+    // fail safe logic
+    if (gear < 1 || gear > maxSafeGear) {
+        failSafe();
+    }
+
+    // get engine RPM to prevent overflow
     if ((millis() - getStartTime()) > 86400000) {
         getEngineRPM();
     }
-    //int TPS = analogRead(getThrottlePositionSensorPin());
-    //if (TPS > 300) {
+
+    // lockout fourth gear if throttle is above 300
     if (analogRead(getThrottlePositionSensorPin()) > 300) {
         lockoutFourthGear();
     } else {
         unlockFourthGear();
     }
-    //Serial.println(crankCount);
-    //Serial.print(engineRPM);
-    //Serial.println(" RPM");
-    //if (millis() % 1000 == 0) {
-    //    Serial.print("TPS: ");
-    //    Serial.println(TPS);
-    //}
 
+    // shift logic
     if (getShiftsRequested() > 0) {
         upShift();
     } else if (getShiftsRequested() < 0) {
