@@ -5,6 +5,7 @@ const int downShiftPin = 3;
 const int shiftSolenoid12 = 4;
 const int shiftSolenoid34 = 5;
 const int crankSensorPin = 18;
+const int VehicleComputerBypassRelayPin = 19;
 
 const int pulsesPerRevolution = 18;
 const int maxSafeGear = 4;
@@ -44,6 +45,10 @@ int getShiftSolenoid34() {
 
 int getCrankSensorPin() {
     return crankSensorPin;
+}
+
+int getVehicleComputerBypassRelayPin() {
+    return VehicleComputerBypassRelayPin;
 }
 
 void incrementCrankCount() {
@@ -215,4 +220,9 @@ void lockoutFourthGear() {
 
 void unlockFourthGear() {
     maxGear = 4;
+}
+
+void failSafe() {
+    digitalWrite(VehicleComputerBypassRelayPin, HIGH);
+    Serial.println("CRITICAL ERROR, EXITING");
 }
