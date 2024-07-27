@@ -51,6 +51,10 @@ int getVehicleComputerBypassRelayPin() {
 }
 
 void recordCrankTime() {
+    if crankTime > micros() {
+        Serial.println("MICROS OVERFLOW");
+        failSafe();
+    }
     crankTime = micros();
 }
 
