@@ -18,7 +18,6 @@ const float thirdGearRatio = 1.000;
 const float fourthGearRatio = 0.705;
 
 int gear = 1;
-unsigned long startTime = millis();
 unsigned long crankTime = 0;
 int shiftsRequested = 0;
 
@@ -64,10 +63,6 @@ void incrementShift() {
 
 void decrementShift() {
     shiftsRequested--;
-}
-
-unsigned long getStartTime() {
-    return startTime;
 }
 
 int getShiftsRequested() {

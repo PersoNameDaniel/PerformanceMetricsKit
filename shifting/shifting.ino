@@ -24,11 +24,6 @@ void loop() {
         failSafe();
     }
 
-    // get engine RPM to prevent overflow
-    if ((millis() - getStartTime()) > 86400000) {
-        getEngineRPM();
-    }
-
     // lockout fourth gear if throttle is above 300
     if (analogRead(getThrottlePositionSensorPin()) > 300) {
         lockoutFourthGear();
