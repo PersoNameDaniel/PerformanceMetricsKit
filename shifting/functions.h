@@ -19,7 +19,7 @@ const float fourthGearRatio = 0.705;
 
 int gear = 1;
 unsigned long startTime = millis();
-unsigned long crankCount = 0;
+unsigned long crankTime = 0;
 int shiftsRequested = 0;
 
 int getThrottlePositionSensorPin() {
@@ -50,8 +50,8 @@ int getVehicleComputerBypassRelayPin() {
     return VehicleComputerBypassRelayPin;
 }
 
-void incrementCrankCount() {
-    crankCount++;
+void recordCrankTime() {
+    crankTime = micros();
 }
 
 void incrementShift() {
@@ -99,17 +99,16 @@ void shiftToFourth() {
 }
 
 int getEngineRPM() {
-    unsigned long currentTime = millis();
-    float timeInSeconds = (currentTime - startTime) / 1000.0;
+    unsigned long currentTime = micros();
+    float timeInSeconds = (currentTime - crankTime) / 1000000.0;
     
-    float frequency = crankCount / timeInSeconds;
+    float frequency = pulsesPerRevolution / timeInSeconds;
     float engineRPM = (frequency / pulsesPerRevolution) * 60;
 
-    //Serial.println(crankCount);
-    //Serial.println(timeInSeconds);
-
-    crankCount = 0;
-    startTime = currentTime;
+    // check for valid RPM measurement
+    if ((engineRPM < minimumRPM * 0.9) || (engineRPM > maximumRPM * 1.1)) {
+        failSafe();
+    }
 
     Serial.println(engineRPM);
     return engineRPM;

@@ -8,7 +8,7 @@ void setup() {
     pinMode(getDownshiftPin(), INPUT);
     attachInterrupt(digitalPinToInterrupt(getDownshiftPin()), decrementShift, RISING);
     pinMode(getCrankSensorPin(), INPUT);
-    attachInterrupt(digitalPinToInterrupt(getCrankSensorPin()), incrementCrankCount, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(getCrankSensorPin()), recordCrankTime, CHANGE);
 
     pinMode(getShiftSolenoid12(), OUTPUT);
     pinMode(getShiftSolenoid34(), OUTPUT);
